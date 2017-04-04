@@ -1,6 +1,6 @@
 global:
   imagePullPolicy: IfNotPresent
-  relname: test
+  relname: default
 
 storage:
   name: ext-storage
