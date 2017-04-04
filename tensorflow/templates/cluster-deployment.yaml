@@ -65,7 +65,7 @@ spec:
               key: clusterconfig
         volumeMounts:
         - name: {{ $storname }}
-          mountPath: /var/tensorflow
+          mountPath: /tmp/tensorflow
       volumes:
       - name: {{ $storname }}
         persistentVolumeClaim:
