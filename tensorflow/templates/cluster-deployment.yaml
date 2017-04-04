@@ -1,0 +1,76 @@
+{{- $relname := .Values.global.relname -}}
+{{- $storname := .Values.storage.name -}}
+{{- $repo := .Values.tfCluster.image.repo -}}
+{{- $image := .Values.tfCluster.image.name -}}
+{{- $tagGpu := .Values.tfCluster.image.dockerTagGpu -}}
+{{- $tagCpu := .Values.tfCluster.image.dockerTagCpu -}}
+{{- $port := .Values.tfCluster.service.internalPort -}}
+{{- $nbGpu := .Values.tfCluster.settings.nbGpuPerNode -}}
+{{- $isGpu := .Values.tfCluster.settings.isGpu -}}
+{{- $dataset := .Values.tfCluster.settings.dataset -}}
+{{- $resources := .Values.tfCluster.resources -}}
+
+---
+# Defining a generic configuration file for the cluster
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tensorflow-cluster-config
+data:
+  clusterconfig: >
+        {
+        {{- range $job, $nb := .Values.tfCluster.settings.jobs }}
+          {{ $job | quote }}: [
+          {{ range $i, $e := until (int $nb) | default 8 }}
+            "{{ $job }}-{{$i}}.{{ $relname }}.svc.cluster.local:8080",
+          {{ end }}
+              ],
+        {{- end }}
+        }
+---
+{{- range $job, $nb := .Values.tfCluster.settings.jobs }}
+{{ range $i, $e := until (int $nb) | default 8 }}
+# Definiting a scalable cluster
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $job }}-{{$i}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      job: {{ $job }}
+      task: t{{$i}}
+  template:
+    metadata:
+      labels:
+        job: {{ $job }}
+        task: t{{$i}}
+    spec:
+      containers:
+      - name: tf-grpc-server
+        image: {{ $repo }}/{{ $image }}
+        securityContext:
+          privileged: true
+        ports:
+        - name: grpc-server
+          containerPort: {{ $port }}
+        env:
+        - name: POD_NAME
+          value: {{ $job }}-{{ $i }}
+        - name: CLUSTER_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: tensorflow-cluster-config
+              key: clusterconfig
+        volumeMounts:
+        - name: {{ $storname }}
+          mountPath: /var/tensorflow
+      volumes:
+      - name: {{ $storname }}
+        persistentVolumeClaim:
+          claimName: {{ $storname }}
+---
+{{ end }}
+{{- end }}
+

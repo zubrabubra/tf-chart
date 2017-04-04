@@ -1,0 +1,36 @@
+global:
+  imagePullPolicy: IfNotPresent
+  relname: test
+
+storage:
+  name: ext-storage
+  accessMode: ReadWriteMany
+  pv: 
+    capacity: "1Gi"
+  pvc:
+    name: ext-storage
+    request: "750M"
+
+tfCluster:
+  deploy: true
+  service:
+    name: tensorflow-cluster
+    internalPort: 8080
+    externalPort: 8080
+    type: ClusterIP
+  image: 
+    repo: dmitriplaton
+    name: tf-mnist
+  settings:
+    jobs: 
+      ps: 1
+      worker: 2
+  resources:
+    requests:
+      cpu: 1m
+      memory: 100Mb
+    limits:
+      cpu: 2m
+      memory: 200Mb
+
+
