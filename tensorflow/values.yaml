@@ -27,10 +27,9 @@ tfCluster:
       worker: 2
   resources:
     requests:
-      cpu: 1m
-      memory: 100Mb
+      cpu: 1000m
+      memory: 1Gb
     limits:
-      cpu: 2m
-      memory: 200Mb
-
+      cpu: 2000m
+      memory: 2Gb
 
