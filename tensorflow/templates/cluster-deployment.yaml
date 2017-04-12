@@ -58,6 +58,8 @@ spec:
         env:
         - name: POD_NAME
           value: {{ $job }}-{{ $i }}
+        - name: DATA_DIR
+          value: /var/tensorflow/flowers/
         - name: CLUSTER_CONFIG
           valueFrom:
             configMapKeyRef:
