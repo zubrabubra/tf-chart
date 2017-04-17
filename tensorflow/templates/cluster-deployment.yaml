@@ -85,6 +85,7 @@ spec:
                   operator: In
                   values:
                   - worker
+              topologyKey: workers
       {{ else }}
       nodeSelector:
         type: cpu
