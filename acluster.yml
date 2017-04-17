@@ -38,7 +38,7 @@ applications:
       - "lxd:kubernetes-master/0"
   "kubernetes-worker-cpu":
     charm: "cs:~containers/kubernetes-worker-22"
-    num_units: 2
+    num_units: 1
     options:
       "allow-privileged": "true"
       channel: 1.6/stable
@@ -50,10 +50,9 @@ applications:
       "gui-y": "597"
     to:
       - "1"
-      - "2"
   "kubernetes-worker-gpu":
     charm: "cs:~containers/kubernetes-worker-22"
-    num_units: 1
+    num_units: 2
     options:
       "allow-privileged": "auto"
       channel: 1.6/stable
@@ -64,6 +63,7 @@ applications:
       "gui-x": "743"
       "gui-y": "597"
     to:
+      - "2"
       - "3"
 relations:
   - - "kubernetes-master:cluster-dns"
@@ -105,7 +105,7 @@ machines:
     constraints: "instance-type=m4.large root-disk=120G"
   "2":
     series: xenial
-    constraints: "instance-type=m4.large root-disk=120G"
+    constraints: "instance-type=p2.xlarge root-disk=120G"
   "3":
     series: xenial
     constraints: "instance-type=p2.xlarge root-disk=120G"
