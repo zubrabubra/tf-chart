@@ -76,10 +76,20 @@ spec:
       {{ if eq $job "worker" }}
       nodeSelector:
         type: gpu
+      affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: job
+                  operator: In
+                  values:
+                  - worker
       {{ else }}
       nodeSelector:
         type: cpu
       {{ end }}
+      
 ---
 {{ end }}
 {{- end }}
