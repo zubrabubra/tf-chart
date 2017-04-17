@@ -19,7 +19,7 @@ tfCluster:
     externalPort: 8080
     type: ClusterIP
   image: 
-    repo: vktk
+    repo: zubrabubra
     name: flowers-inception:latest
   settings:
     jobs: 
