@@ -73,6 +73,13 @@ spec:
       - name: {{ $storname }}
         persistentVolumeClaim:
           claimName: {{ $storname }}
+      {{ if eq $job "worker" }}
+      nodeSelector:
+        type: gpu
+      {{ else }}
+      nodeSelector:
+        type: cpu
+      {{ end }}
 ---
 {{ end }}
 {{- end }}
