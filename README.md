@@ -31,7 +31,7 @@ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_
 chmod 700 get_helm.sh
 ./get_helm.sh
 helm init
-https://github.com/zubrabubra/tf-chart/
+git clone https://github.com/zubrabubra/tf-chart/
 cd tf-chart
 helm serve . &
 
