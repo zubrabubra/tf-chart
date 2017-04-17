@@ -1,4 +1,4 @@
-eries: xenial
+series: xenial
 applications:
   flannel:
     charm: "cs:~containers/flannel-13"
