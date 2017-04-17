@@ -20,7 +20,7 @@ tfCluster:
     type: ClusterIP
   image: 
     repo: zubrabubra
-    name: flowers-inception:latest
+    name: flowers-viktor:latest
   settings:
     jobs: 
       ps: 1
