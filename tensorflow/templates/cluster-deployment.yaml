@@ -49,7 +49,11 @@ spec:
     spec:
       containers:
       - name: tf-grpc-server
+        {{ if eq $job "worker" }}
         image: {{ $repo }}/{{ $image }}
+        {{ else }}
+        image: {{ $repo }}/{{ $image }}cpu
+        {{ end }}
         securityContext:
           privileged: true
         ports:
