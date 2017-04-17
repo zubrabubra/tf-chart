@@ -32,8 +32,7 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 helm init
 https://github.com/zubrabubra/tf-chart/
-cd blogposts/k8s-dl
-cd src/charts
+cd tf-chart
 helm serve . &
 
 ```
