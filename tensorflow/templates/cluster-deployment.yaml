@@ -79,7 +79,7 @@ spec:
           claimName: {{ $storname }}
       {{ if eq $job "worker" }}
       nodeSelector:
-        type: gpu
+        type: gpu{{ $i }}
       affinity:
           podAntiAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
