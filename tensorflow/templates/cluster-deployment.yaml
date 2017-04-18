@@ -71,7 +71,7 @@ spec:
               key: clusterconfig
         volumeMounts:
         - name: {{ $storname }}
-          mountPath: /var/tensorflow
+          mountPath: /efs/tensorflow
       restartPolicy: Never
       volumes:
       - name: {{ $storname }}
