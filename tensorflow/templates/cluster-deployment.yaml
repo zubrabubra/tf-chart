@@ -64,6 +64,8 @@ spec:
           value: {{ $job }}-{{ $i }}
         - name: DATA_DIR
           value: /var/tensorflow/flowers/
+        - name: LD_LIBRARY_PATH
+          value: "$LD_LIBRARY_PATH:/usr/lib/nvidia:/usr/lib/cuda"
         - name: CLUSTER_CONFIG
           valueFrom:
             configMapKeyRef:
