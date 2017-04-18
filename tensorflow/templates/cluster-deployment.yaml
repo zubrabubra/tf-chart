@@ -75,24 +75,44 @@ spec:
         - name: {{ $storname }}
           mountPath: /efs/tensorflow
         {{ if eq $job "worker" }}
-        - name: /dev/nvidia0
-          mountPath: /dev/nvidia0
+        - mountPath: /dev/nvidia0
+          name: nvidia0
         - mountPath: /dev/nvidiactl
-          name: /dev/nvidiactl
+          name: nvidiactl
         - mountPath: /dev/nvidia-uvm
-          name: /dev/nvidia-uvm
+          name: nvidia-uvm
         - mountPath: /usr/local/nvidia/bin
-          name: /usr/local/nvidia/bin
+          name: bin
         - mountPath: /usr/lib/nvidia
-          name:  /usr/lib/nvidia
+          name: lib
         - mountPath: /usr/lib/cuda
-          name: /usr/lib/cuda
+          name: libcuda
         {{ end }}
       restartPolicy: Never
       volumes:
       - name: {{ $storname }}
         persistentVolumeClaim:
           claimName: {{ $storname }}
+       {{ if eq $job "worker" }}
+      - name: nvidia0
+        hostPath: 
+          path: /dev/nvidia0
+      - name: nvidiactl
+        hostPath: 
+          path: /dev/nvidiactl
+      - name: nvidia-uvm
+        hostPath: 
+          path: /dev/nvidia-uvm
+      - name: bin
+        hostPath: 
+          path: /usr/lib/nvidia-375/bin
+      - name: lib
+        hostPath: 
+          path: /usr/lib/nvidia-375
+      - name: libcuda
+        hostPath: 
+          path: /usr/lib/x86_64-linux-gnu
+      {{ end }}
       {{ if eq $job "worker" }}
       nodeSelector:
         type: gpu{{ $i }}
