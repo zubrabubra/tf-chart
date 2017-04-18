@@ -74,6 +74,20 @@ spec:
         volumeMounts:
         - name: {{ $storname }}
           mountPath: /efs/tensorflow
+        {{ if eq $job "worker" }}
+        - name: nvidia0
+          mountPath: /dev/nvidia0
+        - mountPath: /dev/nvidiactl
+          name: nvidiactl
+        - mountPath: /dev/nvidia-uvm
+          name: nvidia-uvm
+        - mountPath: /usr/local/nvidia/bin
+          name: bin
+        - mountPath: /usr/lib/nvidia
+          name: lib
+        - mountPath: /usr/lib/cuda
+          name: libcuda
+        {{ end }}
       restartPolicy: Never
       volumes:
       - name: {{ $storname }}
