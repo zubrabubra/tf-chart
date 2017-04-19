@@ -39,3 +39,7 @@ helm serve . &
 
 - create PV/PVC
 `helm install efs --name release-name --debug --dry-run`
+
+- start distributed learning
+
+`helm install tensorflow --name tensorflow --values tensorflow/values.yaml`
