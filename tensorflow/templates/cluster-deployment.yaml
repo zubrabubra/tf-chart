@@ -125,7 +125,7 @@ spec:
                   operator: In
                   values:
                   - worker
-              topologyKey: node
+              topologyKey: kubernetes.io/hostname
       {{ else }}
       nodeSelector:
         type: cpu
