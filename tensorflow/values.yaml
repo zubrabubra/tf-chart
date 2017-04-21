@@ -25,6 +25,7 @@ tfCluster:
     jobs: 
       ps: 1
       worker: 2
+      tb: 1
   resources:
     requests:
       cpu: 1000m
@@ -32,3 +33,4 @@ tfCluster:
     limits:
       cpu: 2000m
       memory: 2Gb
+

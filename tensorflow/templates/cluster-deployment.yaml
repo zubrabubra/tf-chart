@@ -20,11 +20,13 @@ data:
   clusterconfig: >
         {
         {{- range $job, $nb := .Values.tfCluster.settings.jobs }}
+          {{ if ne $job "tb" }}
           {{ $job | quote }}: [
           {{ range $i, $e := until (int $nb) | default 8 }}
             "{{ $job }}-{{$i}}.{{ $relname }}.svc.cluster.local:8080",
           {{ end }}
               ],
+          {{ end }}
         {{- end }}
         }
 ---
@@ -46,13 +48,19 @@ spec:
       labels:
         job: {{ $job }}
         task: t{{$i}}
+        delta: {{$job}}{{$i}}
     spec:
       containers:
       - name: tf-grpc-server
         {{ if eq $job "worker" }}
         image: {{ $repo }}/{{ $image }}
         {{ else }}
+        {{ if eq $job "ps" }}
         image: {{ $repo }}/{{ $image }}cpu
+        {{ else }}
+        image: gcr.io/tensorflow/tensorflow
+        command: [ "tensorboard", "--logdir", "/var/tensorflow/flowers/" ]
+        {{ end }}
         {{ end }}
         securityContext:
           privileged: true
@@ -74,7 +82,13 @@ spec:
         volumeMounts:
         - name: {{ $storname }}
           mountPath: /efs/tensorflow
+        {{ if eq $job "tb" }}
+        - mountPath: /var/tensorflow/flowers/
+          name: datapath
+        {{ end }}
         {{ if eq $job "worker" }}
+        - mountPath: /var/tensorflow/flowers/
+          name: datapath
         - mountPath: /dev/nvidia0
           name: nvidia0
         - mountPath: /dev/nvidiactl
@@ -93,7 +107,15 @@ spec:
       - name: {{ $storname }}
         persistentVolumeClaim:
           claimName: {{ $storname }}
+       {{ if eq $job "tb" }}
+      - name: datapath
+        hostPath:
+          path: /flowers/
+       {{ end }}
        {{ if eq $job "worker" }}
+      - name: datapath
+        hostPath:
+          path: /flowers/
       - name: nvidia0
         hostPath: 
           path: /dev/nvidia0
@@ -127,8 +149,21 @@ spec:
                   - worker
               topologyKey: kubernetes.io/hostname
       {{ else }}
+      {{ if eq $job "ps" }}
       nodeSelector:
         type: cpu
+      {{ else }}
+      affinity:
+          podAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: delta
+                  operator: In
+                  values:
+                  - worker0
+              topologyKey: kubernetes.io/hostname
+      {{ end }}
       {{ end }}
       
 ---

@@ -5,6 +5,7 @@
 ---
 {{- range $job, $nb := .Values.tfCluster.settings.jobs }}
 {{ range $i, $e := until (int $nb) | default 8 }}
+{{ if ne $job "tb" }}
 kind: Service
 apiVersion: v1
 metadata:
@@ -19,5 +20,38 @@ spec:
     job: {{ $job }}
     task: t{{$i}}
 ---
+{{ else }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ $job }}-{{$i}}
+spec:
+  type: {{ $type | quote }}
+  ports:
+  - port: 80
+    targetPort: 6006
+    protocol: TCP
+  selector:
+    job: tb
+    task: t0
+
+
+---
+# Serving Ingress
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: tb-0
+spec:
+  rules:
+  - host: ec2-54-210-209-209.compute-1.amazonaws.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: tb-0
+          servicePort: 80
+---
+{{ end }}
 {{ end }}
 {{- end }}
