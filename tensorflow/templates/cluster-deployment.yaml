@@ -115,7 +115,7 @@ spec:
       {{ end }}
       {{ if eq $job "worker" }}
       nodeSelector:
-        type: gpu{{ $i }}
+        type: gpu
       affinity:
           podAntiAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
