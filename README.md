@@ -38,7 +38,7 @@ helm serve . &
 ```
 
 - create PV/PVC
-`helm install efs --name release-name --debug --dry-run`
+`helm install volumes --name release-name --debug --dry-run`
 
 - start distributed learning
 
